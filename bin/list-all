@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+releases_path=http://www.swi-prolog.org/download/stable/src/
+
+
+function get_versions_page() {
+    curl -s $releases_path
+}
+
+function extract_versions_numbers() {
+    grep -o 'swipl-\([0-9]\.[0-9]\.[0-9]\)' | sed 's/swipl-//'
+}
+
+versions=$(get_versions_page | extract_versions_numbers)
+echo $versions
