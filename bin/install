@@ -41,7 +41,12 @@ install_prolog () {
         tar zxf $source_path -C $install_path --strip-components=1 || die "error untaring $source_path"
         cd $install_path
 
-        ./configure --prefix=$install_path
+        ./configure \
+            --prefix=$install_path \
+            --with-world \
+            --without-jpl \
+            --without-xpce \
+            --disable-libdirversion
         make
         make install
     )
