@@ -18,7 +18,7 @@ Check [asdf](https://github.com/asdf-vm/asdf) readme for instruct on how to inst
 
 ### All systems
 
-You'll need these packages (on MacOS)
+You'll need these packages (on MacOS) (can install with macports)
 
 - `gmp`
 - `jpeg
