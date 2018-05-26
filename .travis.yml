@@ -1,0 +1,8 @@
+language: c
+script: asdf plugin-test swi-prolog https://github.com/mracos/asdf-swiprolog.git 'swipl --version'
+before_script:
+  - git clone https://github.com/asdf-vm/asdf.git
+  - . asdf/asdf.sh
+os:
+  - linux
+  - osx
