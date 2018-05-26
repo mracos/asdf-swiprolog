@@ -1,6 +1,6 @@
 # asdf-swiprolog
 
-[![Travis](https://img.shields.swiprolog/travis/mracos/asdf-swiprolog.svg?style=flat-square)](https://travis-ci.org/mracos/asdf-swiprolog)
+[![Travis](https://img.shields.io/travis/mracos/asdf-swiprolog.svg?style=flat-square)](https://travis-ci.org/mracos/asdf-swiprolog)
 
 [Swiprolog](http://http://www.swi-prolog.org/) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
 
@@ -17,11 +17,10 @@ Check [asdf](https://github.com/asdf-vm/asdf) readme for instruct on how to inst
 ## Before `asdf install`
 
 ### All systems
-
 You'll need these packages (on MacOS) (can install with macports)
 
 - `gmp`
-- `jpeg
+- `jpeg`
 - `libarchive`
 - `libiconv`
 - `libmcrypt`
