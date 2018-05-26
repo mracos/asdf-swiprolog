@@ -27,7 +27,7 @@ download_source_file() {
     curl --fail -Lo $download_path $download_url || die "error fetching ${download_url}"
 }
 
-install_io () {
+install_prolog () {
     local install_type=$1
     local version=$2
     local install_path=$3
@@ -47,4 +47,4 @@ install_io () {
     )
 }
 
-install_io $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
+install_prolog $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
