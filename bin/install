@@ -24,6 +24,13 @@ download_source_file() {
     local download_path=$3
     local download_url="http://www.swi-prolog.org/download/stable/src/swipl-${version}.tar.gz"
 
+    # if devel suffix in version we install from development channel
+    if [[ $version =~ .*-devel ]]
+    then
+        # remove the -devel suffix from version
+        download_url="http://www.swi-prolog.org/download/devel/src/swipl-${version%-devel}.tar.gz"
+    fi
+
     curl --fail -Lo $download_path $download_url || die "error fetching ${download_url}"
 }
 

@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 releases_path=http://www.swi-prolog.org/download/stable/src/
-
+devel_releases_path=http://www.swi-prolog.org/download/devel/src/
 
 function get_versions_page() {
     curl -s $releases_path
+}
+
+get_devel_versions_page() {
+    curl -s $devel_releases_path
 }
 
 function extract_versions_numbers() {
     grep -o 'swipl-\([0-9]\.[0-9]\.[0-9]\)' | sed 's/swipl-//'
 }
 
+append_devel_tag() {
+    sed 's/$/-devel/g'
+}
+
 versions=$(get_versions_page | extract_versions_numbers)
-echo $versions
+devel_versions=$(get_devel_versions_page | extract_versions_numbers | append_devel_tag)
+
+echo $devel_versions $versions
