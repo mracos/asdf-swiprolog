@@ -11,7 +11,7 @@ get_devel_versions_page() {
 }
 
 function extract_versions_numbers() {
-    grep -o 'swipl-\([0-9]\.[0-9]\.[0-9]\)' | sed 's/swipl-//'
+    grep -o 'swipl-\([0-9]\+\.[0-9]\+\.[0-9]\+\)' | sed 's/swipl-//'
 }
 
 append_devel_tag() {
