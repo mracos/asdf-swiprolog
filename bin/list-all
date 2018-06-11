@@ -21,5 +21,5 @@ append_devel_tag() {
 versions="$(get_versions_page | extract_versions_numbers)"
 devel_versions="$(get_devel_versions_page | extract_versions_numbers | append_devel_tag)"
 
-echo -e "$devel_versions\n$versions" | sort --version-sort | uniq
+echo -e "$devel_versions\n$versions" | sort --version-sort | uniq | paste -s -d" " -
 
