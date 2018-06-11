@@ -21,4 +21,4 @@ append_devel_tag() {
 versions=$(get_versions_page | extract_versions_numbers)
 devel_versions=$(get_devel_versions_page | extract_versions_numbers | append_devel_tag)
 
-echo $devel_versions $versions
+echo $devel_versions $versions | sort --version-sort
