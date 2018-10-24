@@ -1,6 +1,6 @@
 # asdf-swiprolog
 
-[![Travis](https://img.shields.io/travis/mracos/asdf-swiprolog.svg?style=flat-square)](https://travis-ci.org/mracos/asdf-swiprolog)
+[![Travis](https://img.shields.io/travis/mracos/asdf-swiprolog/master.svg?style=flat-square)](https://travis-ci.org/mracos/asdf-swiprolog)
 
 [Swiprolog](http://www.swi-prolog.org/) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
 
