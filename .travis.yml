@@ -1,6 +1,6 @@
 language: c
 script:
-  - asdf plugin-test swi-prolog $TRAVIS_BUILD_DIR 'swipl --version'
+  - asdf plugin-test swi-prolog . 'swipl --version'
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git
   - . asdf/asdf.sh
