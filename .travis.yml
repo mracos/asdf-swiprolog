@@ -4,7 +4,6 @@ script:
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git
   - . asdf/asdf.sh
-  - git -C $TRAVIS_BUILD_DIR checkout $TRAVIS_BUILD_BRANCH
 os:
   - linux
   - osx
