@@ -7,3 +7,11 @@ before_script:
 os:
   - linux
   - osx
+
+addons:
+  homebrew:
+    packages:
+      - ninja
+  apt:
+    packages:
+      - ninja-build
