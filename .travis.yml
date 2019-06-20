@@ -15,3 +15,4 @@ addons:
   apt:
     packages:
       - ninja-build
+      - libxinerama-dev
