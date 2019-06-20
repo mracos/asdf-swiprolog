@@ -12,10 +12,10 @@ os:
 addons:
   homebrew:
     packages:
-      - ninja
+      # - ninja
       - readline
   apt:
     packages:
-      - ninja-build
+      # - ninja-build
       - libxinerama-dev
       - libarchive-dev

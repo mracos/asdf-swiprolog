@@ -58,9 +58,11 @@ curl -Lo "$source_path" "$download_url"
   # gnu autotools and make to cmake with ninja
   # Here we compare versions without the '-devel' suffix (if any)
   if [[ "$(compare_version ${ASDF_INSTALL_VERSION%-devel} 7.7.21)" == '>' ]]; then
-    cmake -DCMAKE_INSTALL_PREFIX=$ASDF_INSTALL_PATH -DBUILD_PDF_DOCUMENTATION=OFF -G Ninja
-    ninja
-    ninja install
+    cmake -DCMAKE_INSTALL_PREFIX=$ASDF_INSTALL_PATH -DBUILD_PDF_DOCUMENTATION=OFF -DCMAKE_MAKE_PROGRAM=make
+    make
+    make install
+    # ninja
+    # ninja install
   else
     ./configure \
         --prefix="$ASDF_INSTALL_PATH" \
