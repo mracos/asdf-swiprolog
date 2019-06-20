@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-releases_path=http://www.swi-prolog.org/download/stable/src/
-devel_releases_path=http://www.swi-prolog.org/download/devel/src/
+releases_path=https://www.swi-prolog.org/download/stable/src/
+devel_releases_path=https://www.swi-prolog.org/download/devel/src/
 
 function get_versions_page() {
     curl -s "$releases_path"
