@@ -12,6 +12,7 @@ addons:
   homebrew:
     packages:
       - ninja
+    update: true
   apt:
     packages:
       - ninja-build
