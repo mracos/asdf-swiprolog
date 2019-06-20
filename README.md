@@ -16,6 +16,11 @@ Check [asdf](https://github.com/asdf-vm/asdf) readme for instruct on how to inst
 
 ## Before `asdf install`
 
+### Ninja
+You'll need the [ninja](https://ninja-build.org/) build tool for versions after `7.7.21-devel`
+
+For versions before `7.7.21-devel` it still uses GNU `autoconf` tools and `make`
+
 ### All systems
 You'll need these packages (on MacOS) (can install with macports)
 
@@ -32,6 +37,5 @@ You'll need these packages (on MacOS) (can install with macports)
 - `zlib`
 - `pcre`
 - `libedit`
-
 
 On linux you need [these ones](http://www.swi-prolog.org/build/prerequisites.html)
