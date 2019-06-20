@@ -12,6 +12,7 @@ addons:
   homebrew:
     packages:
       - ninja
+      - readline
     update: true
   apt:
     packages:
