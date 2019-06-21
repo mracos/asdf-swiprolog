@@ -2,8 +2,8 @@ language: c
 script:
   - asdf plugin-test swi-prolog $TRAVIS_BUILD_DIR 'swipl --version'
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link --force readline; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link --force libarchive; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --force readline libarchive; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link --force readline libarchive; fi
   - git clone https://github.com/asdf-vm/asdf.git
   - . asdf/asdf.sh
 os:
@@ -11,11 +11,6 @@ os:
   - osx
 
 addons:
-  homebrew:
-    packages:
-      - readline
-      - libarchive
-    update: true
   apt:
     packages:
       - libxinerama-dev
