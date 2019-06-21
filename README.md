@@ -5,7 +5,6 @@
 [Swiprolog](http://www.swi-prolog.org/) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
 
 ## Install
-
 ```
 asdf plugin-add swiprolog https://github.com/mracos/asdf-swiprolog.git
 ```
@@ -16,9 +15,10 @@ Check [asdf](https://github.com/asdf-vm/asdf) readme for instruct on how to inst
 
 ## Before `asdf install`
 
-### All systems
-You'll need these packages (on MacOS) (can install with macports)
+## Dependencies
+- For versions after `7.7.21-devel` you'll need [cmake](https://cmake.org/), since swiprolog started to ship with `CMakeLists.txt` instead of with a `./configure` script
 
+### MacOS (can install with macports)
 - `gmp`
 - `jpeg`
 - `libarchive`
@@ -33,5 +33,8 @@ You'll need these packages (on MacOS) (can install with macports)
 - `pcre`
 - `libedit`
 
-
+### Linux
 On linux you need [these ones](http://www.swi-prolog.org/build/prerequisites.html)
+
+## :warning:
+- By default it installs without the `java_interface` (jpl) and without the `graphics_subsystem` (xpce)
