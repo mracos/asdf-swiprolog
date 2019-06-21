@@ -7,3 +7,13 @@ before_script:
 os:
   - linux
   - osx
+
+addons:
+  homebrew:
+    packages:
+      - readline
+      - libarchive
+  apt:
+    packages:
+      - libxinerama-dev
+      - libarchive-dev
