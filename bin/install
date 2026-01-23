@@ -57,11 +57,30 @@ curl -Lo "$source_path" "$download_url"
   # For versions after 7.7.21 use cmake instead of gnu autoconf tools
   # Here we compare versions without the '-devel' suffix (if any)
   if [[ "$(compare_version ${ASDF_INSTALL_VERSION%-devel} 7.7.21)" == '>' ]]; then
-    cmake \
+    # Out-of-source build required for SWI-Prolog 10+
+    if [[ "$(compare_version 10 ${ASDF_INSTALL_VERSION%-devel})" != '>' ]]; then
+      mkdir -p build && cd build
+      source_dir=".."
+    else
+      source_dir="."
+    fi
+
+    # Detect macOS dependency source
+    macos_deps=""
+    if [[ "$(uname)" == "Darwin" ]]; then
+      if command -v brew &>/dev/null; then
+        macos_deps="-DMACOSX_DEPENDENCIES_FROM=Homebrew"
+      elif [[ -d /opt/local ]]; then
+        macos_deps="-DMACOSX_DEPENDENCIES_FROM=Macports"
+      fi
+    fi
+
+    cmake "$source_dir" \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX="$ASDF_INSTALL_PATH" \
       -DSWIPL_PACKAGES_X=OFF \
-      -DSWIPL_PACKAGES_JAVA=OFF
+      -DSWIPL_PACKAGES_JAVA=OFF \
+      $macos_deps
   else
     ./configure \
         --prefix="$ASDF_INSTALL_PATH" \
