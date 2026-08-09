@@ -70,7 +70,7 @@ curl -Lo "$source_path" "$download_url"
     if [[ "$(uname)" == "Darwin" ]]; then
       if command -v brew &>/dev/null; then
         macos_deps="-DMACOSX_DEPENDENCIES_FROM=Homebrew"
-      elif [[ -d /opt/local ]]; then
+      elif command -v port &>/dev/null; then
         macos_deps="-DMACOSX_DEPENDENCIES_FROM=Macports"
       fi
     fi
