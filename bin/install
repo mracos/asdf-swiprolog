@@ -61,8 +61,11 @@ curl -Lo "$source_path" "$download_url"
     if [[ "$(compare_version 10 ${ASDF_INSTALL_VERSION%-devel})" != '>' ]]; then
       mkdir -p build && cd build
       source_dir=".."
+      # SWI-Prolog 10+ renamed the X package option to GUI
+      gui_package="-DSWIPL_PACKAGES_GUI=OFF"
     else
       source_dir="."
+      gui_package="-DSWIPL_PACKAGES_X=OFF"
     fi
 
     # Detect macOS dependency source
@@ -78,7 +81,7 @@ curl -Lo "$source_path" "$download_url"
     cmake "$source_dir" \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX="$ASDF_INSTALL_PATH" \
-      -DSWIPL_PACKAGES_X=OFF \
+      $gui_package \
       -DSWIPL_PACKAGES_JAVA=OFF \
       $macos_deps
   else
