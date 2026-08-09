@@ -11,7 +11,8 @@ get_devel_versions_page() {
 }
 
 extract_versions_numbers() {
-    grep -o 'swipl-\([0-9]\+\.[0-9]\+\.[0-9]\+\)' | sed 's/swipl-//'
+    # Match both the current `swipl-` tarballs and the pre-7.3.0 `pl-` ones
+    grep -oE '(swipl|pl)-[0-9]+\.[0-9]+\.[0-9]+' | sed -E 's/^(swipl|pl)-//'
 }
 
 # stolen from https://github.com/rbenv/ruby-build/pull/631/files#diff-fdcfb8a18714b33b07529b7d02b54f1dR942
