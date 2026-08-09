@@ -42,11 +42,17 @@ compare_version() {
 tmp_download_dir="$(mktemp -dt swi-prolog_build_XXXXXX)"
 source_path="$tmp_download_dir/swi-prolog-$ASDF_INSTALL_TYPE-$ASDF_INSTALL_VERSION.tar.gz"
 
-download_url="http://www.swi-prolog.org/download/stable/src/swipl-$ASDF_INSTALL_VERSION.tar.gz"
+# Releases before 7.0 predate the swipl rename and ship as `pl-*` tarballs
+tarball_prefix="swipl"
+if [[ "$(compare_version ${ASDF_INSTALL_VERSION%-devel} 7.0.0)" == '<' ]]; then
+  tarball_prefix="pl"
+fi
+
+download_url="http://www.swi-prolog.org/download/stable/src/$tarball_prefix-$ASDF_INSTALL_VERSION.tar.gz"
 # if devel suffix in version we install from development channel
 if [[ "$ASDF_INSTALL_VERSION" =~ .*-devel ]]; then
   # remove the -devel suffix from version
-  download_url="http://www.swi-prolog.org/download/devel/src/swipl-${ASDF_INSTALL_VERSION%-devel}.tar.gz"
+  download_url="http://www.swi-prolog.org/download/devel/src/$tarball_prefix-${ASDF_INSTALL_VERSION%-devel}.tar.gz"
 fi
 curl -Lo "$source_path" "$download_url"
 
