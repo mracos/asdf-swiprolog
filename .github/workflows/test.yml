@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: shellcheck
-        run: shellcheck -x -S error bin/install bin/list-all test/helpers.bash
+        run: shellcheck -x -S error bin/install bin/list-all bin/latest-stable test/helpers.bash
 
   test:
     name: regression

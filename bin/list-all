@@ -16,9 +16,11 @@ extract_versions_numbers() {
 }
 
 # stolen from https://github.com/rbenv/ruby-build/pull/631/files#diff-fdcfb8a18714b33b07529b7d02b54f1dR942
+# The major must sort numerically (-k 1,1n): lexicographically "10" < "5",
+# which buried 10.x in the middle of the list and made `latest` pick 9.x.
 function sort_versions() {
     sed 'h; s/[+-]/./g; s/.p\([[:digit:]]\)/.z\1/; s/$/.z/; G; s/\n/ /' \
-        | LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n \
+        | LC_ALL=C sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n -k 5,5n \
         | awk '{print $2}'
 }
 

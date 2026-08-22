@@ -32,6 +32,8 @@ See the [asdf](https://github.com/asdf-vm/asdf) or [mise](https://mise.jdx.dev/)
 - Releases before the `pl` -> `swipl` rename (older than 7.0.0) come as `pl-<version>` tarballs and are listed with their plain version number.
 - Development releases are suffixed with `-devel` (for example `9.3.20-devel`) and are pulled from the devel channel.
 
+`asdf latest swiprolog` and `mise use swiprolog@latest` resolve to the newest stable release. A `-devel` release is never picked automatically, however new it is; ask for it by name.
+
 ## Build system
 
 The plugin picks the build system from the version:

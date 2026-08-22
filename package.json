@@ -6,7 +6,7 @@
   "scripts": {
     "test": "bats test/regression",
     "test:regression": "bats test/regression",
-    "lint:shell": "shellcheck -x -S error bin/install bin/list-all test/helpers.bash"
+    "lint:shell": "shellcheck -x -S error bin/install bin/list-all bin/latest-stable test/helpers.bash"
   },
   "devDependencies": {
     "bats": "^1.11.0"

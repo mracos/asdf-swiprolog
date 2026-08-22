@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# asdf and mise call this as `bin/latest-stable [query]` to resolve
+# `asdf latest swiprolog` and `swiprolog@latest`. Without it they fall back
+# to taking the last entry of list-all, which silently depends on both the
+# sort order and on devel releases being filtered by a generic regex.
+#
+# `query` is an optional literal version prefix, e.g. 9 or 6.6.
+
+set -eu
+
+plugin_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+query="${1:-}"
+
+stable_versions() {
+  "$plugin_dir/list-all" | tr ' ' '\n' | grep -v -- '-devel$'
+}
+
+# awk's index() keeps the match literal and anchored, so a '.' in the query
+# stays a dot and '0.2' cannot match 10.0.2.
+if [ -n "$query" ]; then
+  stable_versions | awk -v q="$query" 'index($0, q) == 1' | tail -1
+else
+  stable_versions | tail -1
+fi
