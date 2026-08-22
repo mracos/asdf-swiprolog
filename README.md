@@ -84,7 +84,7 @@ npm test            # bats test/regression
 npm run lint:shell  # shellcheck -x -S error
 ```
 
-Both run on every push and pull request via GitHub Actions.
+Both run on every push and pull request via GitHub Actions. The regression leg runs on Linux and macOS, since macOS still ships bash 3.2 and the scripts have to keep working there.
 
 ## Optional packages
 

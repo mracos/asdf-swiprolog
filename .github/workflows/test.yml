@@ -16,9 +16,15 @@ jobs:
         run: shellcheck -x -S error bin/install bin/list-all bin/latest-stable test/helpers.bash
 
   test:
-    name: regression
-    runs-on: ubuntu-latest
+    name: regression (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        # macOS ships bash 3.2, and it is the platform most of the
+        # dependency notes target, so it gets its own leg.
+        os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
 
@@ -30,10 +36,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: bats-${{ hashFiles('package.json') }}
+          key: bats-${{ matrix.os }}-${{ hashFiles('package.json') }}
 
       - name: Install bats
         run: npm install --no-save bats@1.11.0
+
+      - name: bash version
+        run: bash --version | head -1
 
       # The suite is hermetic: curl/cmake/make/tar are stubbed, so it needs
       # no network and no toolchain.
