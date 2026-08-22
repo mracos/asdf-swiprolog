@@ -39,6 +39,27 @@ compare_version() {
   return 0
 }
 
+# jpl (java) and xpce (graphics) are off by default because both drag in
+# toolchains most hosts lack. Opt back in per install:
+#   SWIPROLOG_ENABLE_JAVA=1 asdf install swiprolog 9.2.9
+#   SWIPROLOG_ENABLE_GUI=1  asdf install swiprolog 9.2.9
+is_enabled() {
+  case "$(printf '%s' "${1:-}" | tr '[:upper:]' '[:lower:]')" in
+    1|on|yes|true) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+java_package=OFF
+if is_enabled "${SWIPROLOG_ENABLE_JAVA:-}"; then
+  java_package=ON
+fi
+
+gui_package=OFF
+if is_enabled "${SWIPROLOG_ENABLE_GUI:-}"; then
+  gui_package=ON
+fi
+
 tmp_download_dir="$(mktemp -dt swi-prolog_build_XXXXXX)"
 source_path="$tmp_download_dir/swi-prolog-$ASDF_INSTALL_TYPE-$ASDF_INSTALL_VERSION.tar.gz"
 
@@ -68,10 +89,10 @@ curl -Lo "$source_path" "$download_url"
       mkdir -p build && cd build
       source_dir=".."
       # SWI-Prolog 10+ renamed the X package option to GUI
-      gui_package="-DSWIPL_PACKAGES_GUI=OFF"
+      gui_option="SWIPL_PACKAGES_GUI"
     else
       source_dir="."
-      gui_package="-DSWIPL_PACKAGES_X=OFF"
+      gui_option="SWIPL_PACKAGES_X"
     fi
 
     # Detect macOS dependency source
@@ -87,16 +108,16 @@ curl -Lo "$source_path" "$download_url"
     cmake "$source_dir" \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX="$ASDF_INSTALL_PATH" \
-      $gui_package \
-      -DSWIPL_PACKAGES_JAVA=OFF \
+      "-D$gui_option=$gui_package" \
+      "-DSWIPL_PACKAGES_JAVA=$java_package" \
       $macos_deps
   else
-    ./configure \
-        --prefix="$ASDF_INSTALL_PATH" \
-        --with-world \
-        --without-jpl \
-        --without-xpce \
-        --disable-libdirversion
+    configure_flags=(--prefix="$ASDF_INSTALL_PATH" --with-world)
+    [ "$java_package" = ON ] || configure_flags+=(--without-jpl)
+    [ "$gui_package" = ON ] || configure_flags+=(--without-xpce)
+    configure_flags+=(--disable-libdirversion)
+
+    ./configure "${configure_flags[@]}"
   fi
 
   make

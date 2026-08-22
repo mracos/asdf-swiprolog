@@ -8,6 +8,8 @@
 #   - On macOS, MACOSX_DEPENDENCIES_FROM is set from Homebrew if `brew`
 #     is on PATH, else Macports if `port` is, else left unset.
 #   - On non-macOS hosts no MACOSX_DEPENDENCIES_FROM flag is passed.
+#   - Optional packages default to OFF. The opt-in env vars are covered
+#     in package-flags.bats.
 
 load ../helpers
 
@@ -40,7 +42,7 @@ cmake_args() { cat "$CMAKE_ARGS_LOG"; }
     || { echo "expected out-of-source '..' src dir: $output"; false; }
 }
 
-@test "JAVA package is always disabled" {
+@test "JAVA package is disabled by default" {
   run_install 9.2.0
   run cmake_args
   [[ "$output" == *"-DSWIPL_PACKAGES_JAVA=OFF"* ]]

@@ -42,7 +42,7 @@ The plugin picks the build system from the version:
 | `> 7.7.21` | in-source `cmake` with `-DSWIPL_PACKAGES_X=OFF` |
 | `>= 10.0.0` | out-of-source `cmake` in `build/` with `-DSWIPL_PACKAGES_GUI=OFF` |
 
-Java (`jpl`) is disabled on every cmake build. SWI-Prolog 10 renamed the `X` package option to `GUI` and requires an out-of-source build, which is why 10+ gets its own row.
+SWI-Prolog 10 renamed the `X` package option to `GUI` and requires an out-of-source build, which is why 10+ gets its own row.
 
 On macOS the plugin detects the dependency source and passes `-DMACOSX_DEPENDENCIES_FROM=Homebrew` or `-DMACOSX_DEPENDENCIES_FROM=Macports` depending on whether `brew` or `port` is on the PATH.
 
@@ -84,6 +84,18 @@ npm run lint:shell  # shellcheck -x -S error
 
 Both run on every push and pull request via GitHub Actions.
 
-## :warning:
+## Optional packages
 
-By default SWI-Prolog is installed without the `java_interface` (jpl) and without the `graphics_subsystem` (xpce).
+The `java_interface` (jpl) and the `graphics_subsystem` (xpce) are **off by default**, because both need toolchains most machines don't have (a JDK, an X/GUI stack). Two env vars turn them back on:
+
+| Variable | Enables | Build flag |
+|----------|---------|------------|
+| `SWIPROLOG_ENABLE_JAVA` | jpl, the Java interface | `-DSWIPL_PACKAGES_JAVA=ON`, or no `--without-jpl` on the autoconf path |
+| `SWIPROLOG_ENABLE_GUI` | xpce, the graphics subsystem | `-DSWIPL_PACKAGES_GUI=ON` (10+) / `-DSWIPL_PACKAGES_X=ON` (older), or no `--without-xpce` on the autoconf path |
+
+```sh
+SWIPROLOG_ENABLE_JAVA=1 asdf install swiprolog 9.2.9
+SWIPROLOG_ENABLE_JAVA=1 SWIPROLOG_ENABLE_GUI=1 asdf install swiprolog 9.2.9
+```
+
+The vars are read at install time, so they only affect the version you're installing. Enabling a package for one version and not another is fine.
