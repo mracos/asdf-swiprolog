@@ -21,8 +21,25 @@ setup_sandbox() {
   export CURL_URL_LOG="$WORK_DIR/curl-url.log"
   export CMAKE_ARGS_LOG="$WORK_DIR/cmake-args.log"
   export CONFIGURE_ARGS_LOG="$WORK_DIR/configure-args.log"
+  export MAKE_ARGS_LOG="$WORK_DIR/make-args.log"
   mkdir -p "$STUB_BIN"
   : > "$CURL_URL_LOG"
+  : > "$MAKE_ARGS_LOG"
+
+  # mktemp is stubbed rather than sandboxed via TMPDIR: BSD mktemp -t
+  # ignores TMPDIR (it uses _CS_DARWIN_USER_TEMP_DIR) while GNU mktemp
+  # honours it, so a TMPDIR-based assertion would pass vacuously on macOS.
+  # The stub hands out a known dir under $SCRATCH_ROOT instead, so tests
+  # can assert the installer removes what it was given.
+  export SCRATCH_ROOT="$WORK_DIR/scratch"
+  mkdir -p "$SCRATCH_ROOT"
+
+  cat > "$STUB_BIN/mktemp" <<'STUB'
+#!/usr/bin/env bash
+dir="$SCRATCH_ROOT/build.$$"
+mkdir -p "$dir"
+echo "$dir"
+STUB
 
   # curl serves two shapes:
   #   download mode  (`-Lo file url`) -> log the url, create the file
@@ -32,12 +49,23 @@ setup_sandbox() {
 args=("$@"); out=""; i=0
 while [ $i -lt ${#args[@]} ]; do
   case "${args[$i]}" in
-    -o|-Lo|-Lso) i=$((i+1)); out="${args[$i]}" ;;
+    -*o) i=$((i+1)); out="${args[$i]}" ;;   # -o, -Lo, -fLo, ...
   esac
   i=$((i+1))
 done
 url="${args[${#args[@]}-1]}"
 echo "$url" >> "$CURL_URL_LOG"
+# CURL_FAIL simulates a 404. Real curl only reports that as an error when
+# asked with -f; otherwise it writes the error page to the output file and
+# still exits 0, which is what makes an unguarded download dangerous.
+if [ -n "${CURL_FAIL:-}" ]; then
+  if [[ " $* " == *" -f"* ]]; then
+    echo "curl: (22) The requested URL returned error: 404" >&2
+    exit 22
+  fi
+  [ -n "$out" ] && echo "<html>404 Not Found</html>" > "$out"
+  exit 0
+fi
 if [ -n "$out" ]; then
   : > "$out"
   exit 0
@@ -54,9 +82,13 @@ STUB
 printf '%s\n' "$@" >> "$CMAKE_ARGS_LOG"
 STUB
 
-  # tar and make are no-ops; the build never really runs.
+  # tar is a no-op; the build never really runs. make records its argv so
+  # tests can assert on the concurrency flag.
   printf '#!/usr/bin/env bash\nexit 0\n' > "$STUB_BIN/tar"
-  printf '#!/usr/bin/env bash\nexit 0\n' > "$STUB_BIN/make"
+  cat > "$STUB_BIN/make" <<'STUB'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >> "$MAKE_ARGS_LOG"
+STUB
 
   # Default host is Linux so the macOS branch stays dormant unless a test
   # opts in via stub_uname Darwin.
