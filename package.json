@@ -6,6 +6,7 @@
   "scripts": {
     "test": "bats test/regression",
     "test:regression": "bats test/regression",
+    "test:integration": "ASDF_SWIPROLOG_RUN_INTEGRATION=1 bats test/integration",
     "lint:shell": "shellcheck -x -S error bin/install bin/list-all bin/latest-stable test/helpers.bash"
   },
   "devDependencies": {

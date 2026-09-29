@@ -5,6 +5,14 @@ on:
     branches: [master]
   pull_request:
   workflow_dispatch:
+  schedule:
+    # "At 09:17 on Monday." The regression suite stubs curl/cmake/make against
+    # fixture snapshots, so it cannot see upstream drift: bin/list-all scrapes
+    # swi-prolog.org and bin/install builds whatever tarball that page points
+    # at. The weekly integration run is the only thing that would notice the
+    # page changing shape or the newest release failing to compile. Odd minute
+    # dodges top-of-hour runner congestion.
+    - cron: "17 9 * * 1"
 
 jobs:
   lint:
@@ -48,3 +56,57 @@ jobs:
       # no network and no toolchain.
       - name: Regression tests
         run: ./node_modules/.bin/bats test/regression
+
+  # Real end-to-end build via mise: resolves latest-stable off the live
+  # download page and compiles it. A full SWI-Prolog build is slow and the
+  # version under test moves on its own, so this is a drift check on a
+  # schedule rather than a PR gate.
+  integration:
+    name: integration (${{ matrix.os }})
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ${{ matrix.os }}
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    env:
+      ASDF_SWIPROLOG_RUN_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # bin/install leaves SWIPL_PACKAGES_JAVA and the GUI package OFF unless
+      # asked, so no JDK and no X11 here. The rest is SWI-Prolog's documented
+      # core build set.
+      - name: Install build deps (linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake ninja-build pkg-config \
+            libgmp-dev libssl-dev zlib1g-dev libreadline-dev libedit-dev \
+            libarchive-dev libossp-uuid-dev libpcre2-dev libyaml-dev \
+            libdb-dev unixodbc-dev
+
+      # bin/install passes -DMACOSX_DEPENDENCIES_FROM=Homebrew when brew is on
+      # PATH, so cmake resolves these under the brew prefix.
+      - name: Install build deps (macos)
+        if: runner.os == 'macOS'
+        run: brew install cmake gmp openssl@3 libarchive pcre2 libyaml readline
+
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.local/share/mise/shims" >> "$GITHUB_PATH"
+
+      - name: Install bats
+        run: npm install --no-save bats@1.11.0
+
+      - name: Integration tests
+        run: ./node_modules/.bin/bats test/integration
+        timeout-minutes: 60
